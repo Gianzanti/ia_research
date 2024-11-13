@@ -74,6 +74,7 @@
   <worldbody>
     <light name="spotlight" mode="targetbodycom" target="body_link" pos="0 -1 2"/>
     <body name="body_link" pos="0 0 0.3">
+      <camera name="track" mode="trackcom" pos="0 -4 0" xyaxes="1 0 0 0 0 1"/>
       <inertial pos="-0.01501 0.00013 0.06582" quat="0.704708 0.704003 0.0667707 -0.0575246" mass="1.34928"
         diaginertia="0.00341264 0.00316574 0.00296931"/>
       <freejoint/>
@@ -238,9 +239,14 @@
     <exclude body1="r_hip_yaw_link" body2="r_hip_pitch_link"/>
   </contact>
 
+  <sensor>
+    <accelerometer name="accel" site="torso"/>
+    <gyro name="gyro" site="torso"/>
+  </sensor>
+
   <actuator>
-    <position name="head_pan_act" joint="head_pan"/>
-    <position name="head_tilt_act" joint="head_tilt"/>
+    <!-- <position name="head_pan_act" joint="head_pan"/>
+    <position name="head_tilt_act" joint="head_tilt"/> -->
     <position name="l_sho_pitch_act" joint="l_sho_pitch"/>
     <position name="l_sho_roll_act" joint="l_sho_roll"/>
     <position name="l_el_act" joint="l_el"/>
@@ -259,5 +265,6 @@
     <position name="r_knee_act" joint="r_knee"/>
     <position name="r_ank_pitch_act" joint="r_ank_pitch"/>
     <position name="r_ank_roll_act" joint="r_ank_roll"/>
+
   </actuator>
 </mujoco>

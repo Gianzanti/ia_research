@@ -1,7 +1,5 @@
 import argparse
 
-from check_env import show_env
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
@@ -18,7 +16,7 @@ if __name__ == "__main__":
         "--mode",
         type=str,
         help="Mode to run the program",
-        choices=["train", "test", "check"],
+        choices=["train", "test", "check", "check_model"],
         default="train",
     )
     parser.add_argument(
@@ -34,6 +32,12 @@ if __name__ == "__main__":
 
     if args.mode == "check":
         print("Checking environment...")
-        show_env()
+        from check_env import show_env
 
-    # main()
+        show_env()
+    elif args.mode == "check_model":
+        print("Checking model...")
+        from check_model import check_model
+
+        check_model()
+
