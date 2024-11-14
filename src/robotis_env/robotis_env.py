@@ -1,4 +1,5 @@
 import os
+from typing import Tuple
 
 import numpy as np
 from gymnasium import utils
@@ -31,11 +32,18 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
     # set default episode_len for truncate episodes
     def __init__(self, **kwargs):
         utils.EzPickle.__init__(self, **kwargs)
-        # change shape of observation to your observation space size
-        # observation_space = Box(low=-np.inf, high=np.inf, shape=(10,), dtype=np.float64)
-        # load your MJCF model with env and choose frames count between actions
 
         frame_skip = 5
+
+        self._forward_reward_weight: float = 1.25
+        self._ctrl_cost_weight: float = 0.1
+        self._contact_cost_weight: float = 5e-7
+        self._contact_cost_range: Tuple[float, float] = (-np.inf, 10.0)
+        self._healthy_reward: float = 5.0
+        self._terminate_when_unhealthy: bool = True
+        self._healthy_z_range: Tuple[float, float] = (0.20, 0.30)
+        self._reset_noise_scale: float = 1e-2
+
 
         MujocoEnv.__init__(
             self,
@@ -47,33 +55,47 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
             **kwargs
         )
 
-        obs_size = self.data.qpos.size + self.data.qvel.size
+        self.metadata = {
+            "render_modes": [
+                "human",
+                "rgb_array",
+                "depth_array",
+            ],
+            "render_fps": int(np.round(1.0 / self.dt)),
+        }
+
+        obs_size = self.data.qpos.size + self.data.qvel.size + self.data.sensordata.size
         self.observation_space = Box(
             low=-np.inf, high=np.inf, shape=(obs_size,), dtype=np.float64
         )
 
-        # self.step_number = 0
-        # self.episode_len = episode_len
-
 
     @property
     def is_healthy(self):
-        min_z, max_z = (1.0, 2.0) #self._healthy_z_range
-        is_healthy = min_z < self.data.qpos[2] < max_z
-
+        min_z, max_z = self._healthy_z_range
+        is_healthy = min_z < self.data.site('torso').xpos[2] < max_z
         return is_healthy
+
+    @property
+    def healthy_reward(self):
+        return self.is_healthy * self._healthy_reward        
+
+
+    def control_cost(self, action):
+        control_cost = self._ctrl_cost_weight * np.sum(np.square(self.data.ctrl))
+        return control_cost
+
+    @property
+    def contact_cost(self):
+        # contact_forces = self.data.cfrc_ext
+        # contact_cost = self._contact_cost_weight * np.sum(np.square(contact_forces))
+        # min_cost, max_cost = self._contact_cost_range
+        # contact_cost = np.clip(contact_cost, min_cost, max_cost)
+        # return contact_cost
+        return 0
 
     # determine the reward depending on observation or other properties of the simulation
     def step(self, action):
-        # reward = 1.0
-        # self.do_simulation(action, self.frame_skip)
-        # self.step_number += 1
-
-        # obs = self._get_obs()
-        # done = bool(not np.isfinite(obs).all() or (obs[2] < 0))
-        # truncated = self.step_number > self.episode_len
-        # return obs, reward, done, truncated, {}
-
         xy_position_before = mass_center(self.model, self.data)
         self.do_simulation(action, self.frame_skip)
         xy_position_after = mass_center(self.model, self.data)
@@ -83,8 +105,8 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
 
         observation = self._get_obs()
         reward, reward_info = self._get_rew(x_velocity, action)
-        # terminated = (not self.is_healthy) # and self._terminate_when_unhealthy
-        terminated = False
+        terminated = (not self.is_healthy) # and self._terminate_when_unhealthy
+        # terminated = False
         info = {
             "x_position": self.data.qpos[0],
             "y_position": self.data.qpos[1],
@@ -95,7 +117,8 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
         }
 
         # print(f"Data Joint {self.data.joint('head_pan').qpos[:3]}")
-        print(f"Sensors {self.data.sensordata}")
+        # print(f"Data Joint {self.data.site('torso').xpos}")
+        # print(f"Sensors {self.data.sensordata}")
 
         if self.render_mode == "human":
             self.render()
@@ -104,25 +127,27 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
 
 
     def _get_rew(self, x_velocity: float, action):
-        # forward_reward = self._forward_reward_weight * x_velocity
-        # healthy_reward = self.healthy_reward
-        # rewards = forward_reward + healthy_reward
+        # print(f"Action: {action}")
+        # print(f"X Velocity: {x_velocity}")
+        # print(f"Forward Reward: {self._forward_reward_weight}")
+        forward_reward = self._forward_reward_weight * x_velocity
+        healthy_reward = self.healthy_reward
+        rewards = forward_reward + healthy_reward
 
-        # ctrl_cost = self.control_cost(action)
-        # contact_cost = self.contact_cost
-        # costs = ctrl_cost + contact_cost
+        ctrl_cost = self.control_cost(action)
+        contact_cost = self.contact_cost
+        costs = ctrl_cost + contact_cost
 
-        # reward = rewards - costs
+        reward = rewards - costs
 
-        # reward_info = {
-        #     "reward_survive": healthy_reward,
-        #     "reward_forward": forward_reward,
-        #     "reward_ctrl": -ctrl_cost,
-        #     "reward_contact": -contact_cost,
-        # }
+        reward_info = {
+            "reward_survive": healthy_reward,
+            "reward_forward": forward_reward,
+            "reward_ctrl": -ctrl_cost,
+            "reward_contact": -contact_cost,
+        }
 
-        # return reward, reward_info
-        return 1, {}
+        return reward, reward_info
 
     # define what should happen when the model is reset (at the beginning of each episode)
     def reset_model(self):

@@ -8,3 +8,10 @@ wheels/
 
 # Virtual environments
 .venv
+
+
+# Train logs
+logs/
+
+# Train Models
+models/

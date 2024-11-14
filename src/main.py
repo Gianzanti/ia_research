@@ -40,4 +40,15 @@ if __name__ == "__main__":
         from check_model import check_model
 
         check_model()
+    elif args.mode == "train":
+        print("Training...")
+        from train import train
+
+        train(args.algo)
+    elif args.mode == "test":
+        print("Testing...")
+        from test_learn import test
+
+        test(args.algo, args.model)
+        
 
