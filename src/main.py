@@ -16,7 +16,7 @@ if __name__ == "__main__":
         "--mode",
         type=str,
         help="Mode to run the program",
-        choices=["train", "test", "check", "check_model"],
+        choices=["train", "test", "check", "check_model", "keep_training"],
         default="train",
     )
     parser.add_argument(
@@ -50,5 +50,11 @@ if __name__ == "__main__":
         from test_learn import test
 
         test(args.algo, args.model)
+    
+    elif args.mode == "keep_training":
+        print("Training...")
+        from keep_training import keep_training
+
+        keep_training(args.algo, args.model)
         
 

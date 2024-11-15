@@ -35,13 +35,13 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
 
         frame_skip = 5
 
-        self._forward_reward_weight: float = 1.25
+        self._forward_reward_weight: float = 2.50
         self._ctrl_cost_weight: float = 0.1
         self._contact_cost_weight: float = 5e-7
         self._contact_cost_range: Tuple[float, float] = (-np.inf, 10.0)
-        self._healthy_reward: float = 5.0
+        self._healthy_reward: float = 2.0
         self._terminate_when_unhealthy: bool = True
-        self._healthy_z_range: Tuple[float, float] = (0.20, 0.30)
+        self._healthy_z_range: Tuple[float, float] = (0.15, 0.35)
         self._reset_noise_scale: float = 1e-2
 
 
@@ -65,34 +65,14 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
         }
 
         obs_size = self.data.qpos.size + self.data.qvel.size + self.data.sensordata.size
+        obs_size += self.data.cinert[1:].size
+        obs_size += self.data.cvel[1:].size
+        obs_size += (self.data.qvel.size - 6)
+
         self.observation_space = Box(
             low=-np.inf, high=np.inf, shape=(obs_size,), dtype=np.float64
         )
 
-
-    @property
-    def is_healthy(self):
-        min_z, max_z = self._healthy_z_range
-        is_healthy = min_z < self.data.site('torso').xpos[2] < max_z
-        return is_healthy
-
-    @property
-    def healthy_reward(self):
-        return self.is_healthy * self._healthy_reward        
-
-
-    def control_cost(self, action):
-        control_cost = self._ctrl_cost_weight * np.sum(np.square(self.data.ctrl))
-        return control_cost
-
-    @property
-    def contact_cost(self):
-        # contact_forces = self.data.cfrc_ext
-        # contact_cost = self._contact_cost_weight * np.sum(np.square(contact_forces))
-        # min_cost, max_cost = self._contact_cost_range
-        # contact_cost = np.clip(contact_cost, min_cost, max_cost)
-        # return contact_cost
-        return 0
 
     # determine the reward depending on observation or other properties of the simulation
     def step(self, action):
@@ -113,6 +93,7 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
             "distance_from_origin": np.linalg.norm(self.data.qpos[0:2], ord=2),
             "x_velocity": x_velocity,
             "y_velocity": y_velocity,
+            "z_height": self.data.site('torso').xpos[2],
             **reward_info,
         }
 
@@ -126,17 +107,39 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
         return observation, reward, terminated, False, info
 
 
+    @property
+    def is_healthy(self):
+        min_z, max_z = self._healthy_z_range
+        is_healthy = min_z < self.data.site('torso').xpos[2] < max_z
+        return is_healthy
+
+    @property
+    def healthy_reward(self):
+        return self.is_healthy * self._healthy_reward      
+
+    def control_cost(self, action):
+        control_cost = self._ctrl_cost_weight * np.sum(np.square(self.data.ctrl))
+        return control_cost
+
+    @property
+    def contact_cost(self):
+        # contact_forces = self.data.cfrc_ext
+        # contact_cost = self._contact_cost_weight * np.sum(np.square(contact_forces))
+        # min_cost, max_cost = self._contact_cost_range
+        # contact_cost = np.clip(contact_cost, min_cost, max_cost)
+        # return contact_cost
+        return 0
+
+
     def _get_rew(self, x_velocity: float, action):
-        # print(f"Action: {action}")
-        # print(f"X Velocity: {x_velocity}")
-        # print(f"Forward Reward: {self._forward_reward_weight}")
         forward_reward = self._forward_reward_weight * x_velocity
         healthy_reward = self.healthy_reward
         rewards = forward_reward + healthy_reward
 
         ctrl_cost = self.control_cost(action)
-        contact_cost = self.contact_cost
-        costs = ctrl_cost + contact_cost
+        diff_y_axis = abs(self.data.site('torso').xpos[1]) * 0.5
+        # contact_cost = self.contact_cost
+        costs = ctrl_cost + diff_y_axis
 
         reward = rewards - costs
 
@@ -144,7 +147,8 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
             "reward_survive": healthy_reward,
             "reward_forward": forward_reward,
             "reward_ctrl": -ctrl_cost,
-            "reward_contact": -contact_cost,
+            "reward_diff_y_axis": -diff_y_axis,
+            # "reward_contact": -contact_cost,
         }
 
         return reward, reward_info
@@ -181,15 +185,18 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
         position = self.data.qpos.flatten()
         velocity = self.data.qvel.flatten()
         imu = self.data.sensordata.flatten()
+        com_inertia = self.data.cinert[1:].flatten()
+        com_velocity = self.data.cvel[1:].flatten()
+        actuator_forces = self.data.qfrc_actuator[6:].flatten()
 
         return np.concatenate(
             (
                 position,
                 velocity,
                 imu,
-                # com_inertia,
-                # com_velocity,
-                # actuator_forces,
+                com_inertia,
+                com_velocity,
+                actuator_forces,
                 # external_contact_forces,
             )
         )

@@ -31,7 +31,7 @@ def test(sb3_algo, model):
 
     obs = env.reset()[0]
     done = False
-    extra_steps = 500
+    extra_steps = 200
     while True:
         action, _ = model.predict(obs)
         obs, _, done, _, _ = env.step(action)

@@ -1,5 +1,4 @@
 import os
-import time
 
 import gymnasium as gym
 from gymnasium.envs.registration import register
@@ -8,14 +7,15 @@ from stable_baselines3 import A2C, DDPG, PPO, SAC, TD3
 from callback import TensorboardCallback
 
 
-def train(sb3_algo):
-
-    # Create directories to hold models and logs
-    idx = int(time.time())
+def keep_training(sb3_algo, model):
+    idx = model
     model_dir = "models"
     log_dir = f"logs/{idx}"
     os.makedirs(model_dir, exist_ok=True)
     os.makedirs(log_dir, exist_ok=True)
+    
+    model = f"{model_dir}/{sb3_algo}_{model}"
+    print(f"Keep training model: {model}")
 
     register(
         id='Robotis-v0',                      # call it whatever you want
@@ -25,36 +25,22 @@ def train(sb3_algo):
 
     match sb3_algo:
         case "SAC":
-            model = SAC(
-                "MlpPolicy", env, verbose=1, device="cuda", tensorboard_log=log_dir
-            )
+            model = SAC.load(model, env=env, device="cuda", force_reset=True)
         case "TD3":
-            model = TD3(
-                "MlpPolicy", env, verbose=1, device="cuda", tensorboard_log=log_dir
-            )
+            model = TD3.load(model, env=env, device="cuda", force_reset=True)
         case "A2C":
-            model = A2C(
-                "MlpPolicy", env, verbose=1, device="cuda", tensorboard_log=log_dir
-            )
+            model = A2C.load(model, env=env, device="cuda", force_reset=True)
         case "PPO":
-            model = PPO(
-                "MlpPolicy", env, verbose=1, device="cpu", tensorboard_log=log_dir
-            )
-
+            model = PPO.load(model, env=env, device="cpu", force_reset=True)
         case "DDPG":
-            model = DDPG(
-                "MlpPolicy", env, verbose=1, device="cuda", tensorboard_log=log_dir
-            )
+            model = DDPG.load(model, env=env, device="cuda", force_reset=True)
         case _:
             print("Algorithm not found")
             return
 
 
-
-
     TIMESTEPS = 25000
     iters = 0
-    # idx = time.time()
     while True:
         iters += 1
         model.learn(
