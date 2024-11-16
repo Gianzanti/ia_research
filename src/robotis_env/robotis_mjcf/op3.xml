@@ -247,24 +247,43 @@
   <actuator>
     <!-- <position name="head_pan_act" joint="head_pan"/>
     <position name="head_tilt_act" joint="head_tilt"/> -->
-    <position name="l_sho_pitch_act" joint="l_sho_pitch"/>
-    <position name="l_sho_roll_act" joint="l_sho_roll"/>
-    <position name="l_el_act" joint="l_el"/>
-    <position name="r_sho_pitch_act" joint="r_sho_pitch"/>
-    <position name="r_sho_roll_act" joint="r_sho_roll"/>
-    <position name="r_el_act" joint="r_el"/>
-    <position name="l_hip_yaw_act" joint="l_hip_yaw"/>
-    <position name="l_hip_roll_act" joint="l_hip_roll"/>
-    <position name="l_hip_pitch_act" joint="l_hip_pitch"/>
-    <position name="l_knee_act" joint="l_knee"/>
-    <position name="l_ank_pitch_act" joint="l_ank_pitch"/>
-    <position name="l_ank_roll_act" joint="l_ank_roll"/>
-    <position name="r_hip_yaw_act" joint="r_hip_yaw"/>
-    <position name="r_hip_roll_act" joint="r_hip_roll"/>
-    <position name="r_hip_pitch_act" joint="r_hip_pitch"/>
-    <position name="r_knee_act" joint="r_knee"/>
-    <position name="r_ank_pitch_act" joint="r_ank_pitch"/>
-    <position name="r_ank_roll_act" joint="r_ank_roll"/>
+    <!-- <position name="l_sho_pitch_act_pos" joint="l_sho_pitch"/>
+    <position name="l_sho_roll_act_pos" joint="l_sho_roll"/>
+    <position name="l_el_act_pos" joint="l_el"/>
+    <position name="r_sho_pitch_act_pos" joint="r_sho_pitch"/>
+    <position name="r_sho_roll_act_pos" joint="r_sho_roll"/>
+    <position name="r_el_act_pos" joint="r_el"/>
+    <position name="l_hip_yaw_act_pos" joint="l_hip_yaw"/>
+    <position name="l_hip_roll_act_pos" joint="l_hip_roll"/>
+    <position name="l_hip_pitch_act_pos" joint="l_hip_pitch"/>
+    <position name="l_knee_act_pos" joint="l_knee"/>
+    <position name="l_ank_pitch_act_pos" joint="l_ank_pitch"/>
+    <position name="l_ank_roll_act_pos" joint="l_ank_roll"/>
+    <position name="r_hip_yaw_act_pos" joint="r_hip_yaw"/>
+    <position name="r_hip_roll_act_pos" joint="r_hip_roll"/>
+    <position name="r_hip_pitch_act_pos" joint="r_hip_pitch"/>
+    <position name="r_knee_act_pos" joint="r_knee"/>
+    <position name="r_ank_pitch_act_pos" joint="r_ank_pitch"/>
+    <position name="r_ank_roll_act_pos" joint="r_ank_roll"/> -->
 
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="l_sho_pitch_act_pos" joint="l_sho_pitch"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="l_sho_roll_act_pos" joint="l_sho_roll"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="l_el_act_pos" joint="l_el"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="r_sho_pitch_act_pos" joint="r_sho_pitch"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="r_sho_roll_act_pos" joint="r_sho_roll"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="r_el_act_pos" joint="r_el"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="l_hip_yaw_act_pos" joint="l_hip_yaw"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="l_hip_roll_act_pos" joint="l_hip_roll"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="l_hip_pitch_act_pos" joint="l_hip_pitch"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="l_knee_act_pos" joint="l_knee"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="l_ank_pitch_act_pos" joint="l_ank_pitch"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="l_ank_roll_act_pos" joint="l_ank_roll"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="r_hip_yaw_act_pos" joint="r_hip_yaw"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="r_hip_roll_act_pos" joint="r_hip_roll"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="r_hip_pitch_act_pos" joint="r_hip_pitch"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="r_knee_act_pos" joint="r_knee"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="r_ank_pitch_act_pos" joint="r_ank_pitch"/>
+    <motor gear="1" ctrllimited="true" ctrlrange="-4 4" name="r_ank_roll_act_pos" joint="r_ank_roll"/>
+    
   </actuator>
 </mujoco>

@@ -1,5 +1,7 @@
 import argparse
 
+from robotis_env.robotis_env import RobotisEnv  # noqa: F401
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
@@ -28,16 +30,16 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    print(args)
+    # print(args)
 
     if args.mode == "check":
         print("Checking environment...")
-        from check_env import show_env
+        from checking import show_env
 
         show_env()
     elif args.mode == "check_model":
         print("Checking model...")
-        from check_model import check_model
+        from checking import check_model
 
         check_model()
     elif args.mode == "train":

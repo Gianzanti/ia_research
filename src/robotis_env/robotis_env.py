@@ -35,19 +35,16 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
 
         frame_skip = 5
 
-        self._forward_reward_weight: float = 2.50
-        self._ctrl_cost_weight: float = 0.1
-        self._contact_cost_weight: float = 5e-7
-        self._contact_cost_range: Tuple[float, float] = (-np.inf, 10.0)
-        self._healthy_reward: float = 2.0
+        self._forward_reward_weight: float = 3.00
+        self._ctrl_cost_weight: float = 0.05
+        self._healthy_reward: float = 3.0
         self._terminate_when_unhealthy: bool = True
-        self._healthy_z_range: Tuple[float, float] = (0.15, 0.35)
+        self._healthy_z_range: Tuple[float, float] = (0.18, 0.35)
         self._reset_noise_scale: float = 1e-2
 
 
         MujocoEnv.__init__(
             self,
-            # os.path.abspath("src/robotis_op3/scene.xml"),
             os.path.join(os.path.dirname(__file__), "robotis_mjcf", "scene.xml"),
             frame_skip,
             observation_space=None,
@@ -86,7 +83,6 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
         observation = self._get_obs()
         reward, reward_info = self._get_rew(x_velocity, action)
         terminated = (not self.is_healthy) # and self._terminate_when_unhealthy
-        # terminated = False
         info = {
             "x_position": self.data.qpos[0],
             "y_position": self.data.qpos[1],
@@ -96,10 +92,6 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
             "z_height": self.data.site('torso').xpos[2],
             **reward_info,
         }
-
-        # print(f"Data Joint {self.data.joint('head_pan').qpos[:3]}")
-        # print(f"Data Joint {self.data.site('torso').xpos}")
-        # print(f"Sensors {self.data.sensordata}")
 
         if self.render_mode == "human":
             self.render()
@@ -155,7 +147,7 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
 
     # define what should happen when the model is reset (at the beginning of each episode)
     def reset_model(self):
-        self.step_number = 0
+        # self.step_number = 0
 
         # noise_low = -self._reset_noise_scale
         # noise_high = self._reset_noise_scale
@@ -175,13 +167,6 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
     # determine what should be added to the observation
     # for example, the velocities and positions of various joints can be obtained through their names, as stated here
     def _get_obs(self):
-        # obs = np.concatenate((np.array(self.data.joint("ball").qpos[:3]),
-        #                       np.array(self.data.joint("ball").qvel[:3]),
-        #                       np.array(self.data.joint("rotate_x").qpos),
-        #                       np.array(self.data.joint("rotate_x").qvel),
-        #                       np.array(self.data.joint("rotate_y").qpos),
-        #                       np.array(self.data.joint("rotate_y").qvel)), axis=0)
-
         position = self.data.qpos.flatten()
         velocity = self.data.qvel.flatten()
         imu = self.data.sensordata.flatten()
@@ -197,7 +182,6 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
                 com_inertia,
                 com_velocity,
                 actuator_forces,
-                # external_contact_forces,
             )
         )
     
