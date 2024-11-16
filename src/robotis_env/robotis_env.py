@@ -35,11 +35,11 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
 
         frame_skip = 5
 
-        self._forward_reward_weight: float = 3.00
-        self._ctrl_cost_weight: float = 0.05
+        self._forward_reward_weight: float = 2.00
+        self._ctrl_cost_weight: float = 0.001
         self._healthy_reward: float = 3.0
         self._terminate_when_unhealthy: bool = True
-        self._healthy_z_range: Tuple[float, float] = (0.18, 0.35)
+        self._healthy_z_range: Tuple[float, float] = (0.17, 0.35)
         self._reset_noise_scale: float = 1e-2
 
 
@@ -81,7 +81,7 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
         x_velocity, y_velocity = xy_velocity
 
         observation = self._get_obs()
-        reward, reward_info = self._get_rew(x_velocity, action)
+        reward, reward_info = self._get_rew(x_velocity, self.data.qpos[0], action)
         terminated = (not self.is_healthy) # and self._terminate_when_unhealthy
         info = {
             "x_position": self.data.qpos[0],
@@ -123,13 +123,13 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
         return 0
 
 
-    def _get_rew(self, x_velocity: float, action):
-        forward_reward = self._forward_reward_weight * x_velocity
+    def _get_rew(self, x_velocity: float, x_pos:float, action):
+        forward_reward = (self._forward_reward_weight * x_velocity) + (self._forward_reward_weight * x_pos)
         healthy_reward = self.healthy_reward
         rewards = forward_reward + healthy_reward
 
         ctrl_cost = self.control_cost(action)
-        diff_y_axis = abs(self.data.site('torso').xpos[1]) * 0.5
+        diff_y_axis = abs(self.data.site('torso').xpos[1]) * 0.2
         # contact_cost = self.contact_cost
         costs = ctrl_cost + diff_y_axis
 
