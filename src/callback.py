@@ -60,6 +60,7 @@ class TensorboardCallback(BaseCallback):
         self.logger.record('info/x_velocity', info['x_velocity'])
         self.logger.record('info/y_velocity', info['y_velocity'])
         self.logger.record('info/z_height', info['z_height'])
+        self.logger.record('info/x_pos_delta', info['x_pos_delta'])
         self.logger.record('rew/reward_survive', info['reward_survive'])
         self.logger.record('rew/reward_forward', info['reward_forward'])
         self.logger.record('rew/reward_ctrl', info['reward_ctrl'])

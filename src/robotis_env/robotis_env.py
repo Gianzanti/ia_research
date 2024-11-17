@@ -35,11 +35,11 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
 
         frame_skip = 5
 
-        self._forward_reward_weight: float = 2.00
+        self._forward_reward_weight: float = 5.00
         self._ctrl_cost_weight: float = 0.001
         self._healthy_reward: float = 3.0
         self._terminate_when_unhealthy: bool = True
-        self._healthy_z_range: Tuple[float, float] = (0.22, 0.35)
+        self._healthy_z_range: Tuple[float, float] = (0.235, 0.30)
         self._reset_noise_scale: float = 1e-2
 
 
@@ -80,8 +80,10 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
         xy_velocity = (xy_position_after - xy_position_before) / self.dt
         x_velocity, y_velocity = xy_velocity
 
+        x_pos_delta = xy_position_after[0] - xy_position_before[0]
+
         observation = self._get_obs()
-        reward, reward_info = self._get_rew(x_velocity, self.data.qpos[0], action)
+        reward, reward_info = self._get_rew(x_velocity, x_pos_delta, action)
         terminated = (not self.is_healthy) # and self._terminate_when_unhealthy
         info = {
             "x_position": self.data.qpos[0],
@@ -90,6 +92,7 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
             "x_velocity": x_velocity,
             "y_velocity": y_velocity,
             "z_height": self.data.site('torso').xpos[2],
+            "x_pos_delta": x_pos_delta,
             **reward_info,
         }
 
