@@ -2,8 +2,11 @@ import os
 import time
 
 import gymnasium as gym
-from gymnasium.envs.registration import register
+import numpy as np
 from stable_baselines3 import A2C, DDPG, PPO, SAC, TD3
+from stable_baselines3.common.env_util import make_vec_env
+from stable_baselines3.common.noise import NormalActionNoise
+from stable_baselines3.common.vec_env import SubprocVecEnv
 
 from callback import TensorboardCallback
 
@@ -17,11 +20,12 @@ def train(sb3_algo):
     os.makedirs(model_dir, exist_ok=True)
     os.makedirs(log_dir, exist_ok=True)
 
-    register(
-        id='Robotis-v0',                      # call it whatever you want
-        entry_point='robotis_env.robotis_env:RobotisEnv', # module_name:class_name
-    )
+    # register(
+    #     id='Robotis-v0',                      # call it whatever you want
+    #     entry_point='robotis_env.robotis_env:RobotisEnv', # module_name:class_name
+    # )
     env = gym.make("Robotis-v0")
+    TIMESTEPS = 25000
 
     match sb3_algo:
         case "SAC":
@@ -37,24 +41,24 @@ def train(sb3_algo):
                 "MlpPolicy", env, verbose=1, device="cuda", tensorboard_log=log_dir
             )
         case "PPO":
+            env = make_vec_env("Robotis-v0", n_envs=8, vec_env_cls=SubprocVecEnv)
             model = PPO(
                 "MlpPolicy", env, verbose=1, device="cpu", tensorboard_log=log_dir
             )
 
         case "DDPG":
-            model = DDPG(
-                "MlpPolicy", env, verbose=1, device="cuda", tensorboard_log=log_dir
-            )
+            # The noise objects for DDPG
+            n_actions = env.action_space.shape[-1]
+            action_noise = NormalActionNoise(mean=np.zeros(n_actions), sigma=0.1 * np.ones(n_actions))
+
+            model = DDPG("MlpPolicy", env, action_noise=action_noise, verbose=1,  device="cuda", tensorboard_log=log_dir)
+            TIMESTEPS = 10000
+
         case _:
             print("Algorithm not found")
             return
 
-
-
-
-    TIMESTEPS = 25000
     iters = 0
-    # idx = time.time()
     while True:
         iters += 1
         model.learn(

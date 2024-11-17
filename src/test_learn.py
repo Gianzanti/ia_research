@@ -1,15 +1,16 @@
 import gymnasium as gym
-from gymnasium.envs.registration import register
+
+# from gymnasium.envs.registration import register
 from stable_baselines3 import A2C, DDPG, PPO, SAC, TD3
 
 
 def test(sb3_algo, model):
     model_dir = "models"
     
-    register(
-        id='Robotis-v0',                      # call it whatever you want
-        entry_point='robotis_env.robotis_env:RobotisEnv', # module_name:class_name
-    )
+    # register(
+    #     id='Robotis-v0',                      # call it whatever you want
+    #     entry_point='robotis_env.robotis_env:RobotisEnv', # module_name:class_name
+    # )
     env = gym.make("Robotis-v0", render_mode="human", width=1920, height=1080)
     model = f"{model_dir}/{sb3_algo}_{model}"
     print(f"Testing model: {model}")

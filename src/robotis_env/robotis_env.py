@@ -39,7 +39,7 @@ class RobotisEnv(MujocoEnv, utils.EzPickle):
         self._ctrl_cost_weight: float = 0.001
         self._healthy_reward: float = 3.0
         self._terminate_when_unhealthy: bool = True
-        self._healthy_z_range: Tuple[float, float] = (0.17, 0.35)
+        self._healthy_z_range: Tuple[float, float] = (0.22, 0.35)
         self._reset_noise_scale: float = 1e-2
 
 
