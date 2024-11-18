@@ -44,19 +44,24 @@ if __name__ == "__main__":
         check_model()
     elif args.mode == "train":
         print("Training...")
-        from train import train
+        from training import train
 
         train(args.algo)
     elif args.mode == "test":
         print("Testing...")
-        from test_learn import test
+        from training import test
 
         test(args.algo, args.model)
     
     elif args.mode == "keep":
         print("Training...")
-        from keep_training import keep_training
+        from training import keep_training
 
         keep_training(args.algo, args.model)
         
 
+    elif args.mode == "transfer":
+        print("Transfering...")
+        from training import transfer
+
+        transfer(args.algo, args.model)

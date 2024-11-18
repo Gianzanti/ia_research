@@ -168,7 +168,7 @@
             <geom mesh="ll3c" class="collision"/>
             <body name="l_knee_link" pos="0 0 -0.11015">
               <inertial pos="0 -0.02151 -0.055" mass="0.04015" diaginertia="3.715e-05 2.751e-05 1.511e-05"/>
-              <joint name="l_knee" axis="0 1 0" limited="true" range="0 1.57" />
+              <joint name="l_knee" axis="0 1 0" limited="true" range="-0.08 1.57" />
               <geom mesh="ll4" class="visual"/>
               <geom mesh="ll4c" class="collision"/>
               <body name="l_ank_pitch_link" pos="0 0 -0.11">
@@ -211,7 +211,7 @@
             <geom mesh="rl3c" class="collision"/>
             <body name="r_knee_link" pos="0 0 -0.11015">
               <inertial pos="0 0.02151 -0.055" mass="0.04015" diaginertia="3.715e-05 2.751e-05 1.511e-05"/>
-              <joint name="r_knee" axis="0 -1 0" limited="true" range="-1.57 0" /> <!--ref="0.3"/> -->
+              <joint name="r_knee" axis="0 -1 0" limited="true" range="-1.57 0.08" /> <!--ref="0.3"/> -->
               <geom mesh="rl4" class="visual"/>
               <geom mesh="rl4c" class="collision"/>
               <body name="r_ank_pitch_link" pos="0 0 -0.11">
