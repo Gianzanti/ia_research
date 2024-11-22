@@ -59,6 +59,48 @@ def transfer(sb3_algo, model):
             break
 
 
+def keep_training(sb3_algo, model):
+    from_model_dir = model.split("_")[0]
+    from_model_timesteps = model.split("_")[1]
+    model_dir, log_dir = make_dirs(sb3_algo, from_model_dir)
+    print(f"Keep training model: {model_dir}")
+    print(f"Keep training log: {log_dir}")
+
+    model_file = f"models/{sb3_algo}_{from_model_dir}/{from_model_timesteps}"
+    print(f"Keep training from model: {model_file}")
+
+    print(f"Model save: {model_dir}/TIMESTEPS")
+
+    env = gym.make("Robotis-v0")
+    TIMESTEPS = 25000
+
+    match sb3_algo:
+        case "SAC":
+            model = SAC.load(model_file, env=env, device="cuda", force_reset=True)
+        case "TD3":
+            model = TD3.load(model_file, env=env, device="cuda", force_reset=True)
+        case "A2C":
+            model = A2C.load(model_file, env=env, device="cuda", force_reset=True)
+        case "PPO":
+            env = make_vec_env("Robotis-v0", n_envs=8, vec_env_cls=SubprocVecEnv)
+            model = PPO.load(model_file, env=env, device="cpu", force_reset=True)
+        case "DDPG":
+            model = DDPG.load(model_file, env=env, device="cuda", force_reset=True)
+        case _:
+            print("Algorithm not found")
+            return
+
+    iters = int(from_model_timesteps) // TIMESTEPS
+    while True:
+        iters += 1
+        model.learn(
+            total_timesteps=TIMESTEPS, reset_num_timesteps=False, progress_bar=True, callback=TensorboardCallback()
+        )
+        model.save(f"{model_dir}/{TIMESTEPS*iters}")
+        if iters == 10000:
+            break
+
+
 def train(sb3_algo):
     model_dir, log_dir = make_dirs(sb3_algo)
 
