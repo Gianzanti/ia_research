@@ -1,6 +1,6 @@
 import argparse
 
-from robotis_env.robotis_env import RobotisEnv  # noqa: F401
+from robotis_op3.robotis import RobotisEnv
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -1,0 +1,73 @@
+# RUN
+
+./models/PPO_1732235727/
+
+        frame_skip: int = 5,
+        default_camera_config: Dict[str, Union[float, int]] = DEFAULT_CAMERA_CONFIG,
+        forward_reward_weight: float = 2.50,
+        ctrl_cost_weight: float = 0.1,
+        ctrl_cost_diff_axis_y: float = 0.1,
+        # contact_cost_weight: float = 5e-7,
+        # contact_cost_range: Tuple[float, float] = (-np.inf, 10.0),
+        healthy_reward: float = 5.0,
+        terminate_when_unhealthy: bool = True,
+        healthy_z_range: Tuple[float, float] = (0.22, 0.35),
+        reset_noise_scale: float = 1e-2,
+        # exclude_current_positions_from_observation: bool = True,
+        include_cinert_in_observation: bool = False,
+        include_cvel_in_observation: bool = False,
+        include_qfrc_actuator_in_observation: bool = False,
+
+./models/PPO_1732241143/
+
+        frame_skip: int = 5,
+        default_camera_config: Dict[str, Union[float, int]] = DEFAULT_CAMERA_CONFIG,
+        forward_reward_weight: float = 3.50,
+        ctrl_cost_weight: float = 0.1,
+        ctrl_cost_diff_axis_y: float = 0.1,
+        # contact_cost_weight: float = 5e-7,
+        # contact_cost_range: Tuple[float, float] = (-np.inf, 10.0),
+        healthy_reward: float = 2.0,
+        terminate_when_unhealthy: bool = True,
+        healthy_z_range: Tuple[float, float] = (0.22, 0.35),
+        reset_noise_scale: float = 1e-2,
+        # exclude_current_positions_from_observation: bool = True,
+        include_cinert_in_observation: bool = False,
+        include_cvel_in_observation: bool = False,
+        include_qfrc_actuator_in_observation: bool = False,
+
+Logging to logs/1732244408/PPO_0
+
+        frame_skip: int = 5,
+        default_camera_config: Dict[str, Union[float, int]] = DEFAULT_CAMERA_CONFIG,
+        forward_reward_weight: float = 3.00,
+        ctrl_cost_weight: float = 0.05,
+        ctrl_cost_diff_axis_y: float = 0.1,
+        # contact_cost_weight: float = 5e-7,
+        # contact_cost_range: Tuple[float, float] = (-np.inf, 10.0),
+        healthy_reward: float = 3.0,
+        terminate_when_unhealthy: bool = True,
+        healthy_z_range: Tuple[float, float] = (0.22, 0.35),
+        reset_noise_scale: float = 1e-2,
+        # exclude_current_positions_from_observation: bool = True,
+        include_cinert_in_observation: bool = False,
+        include_cvel_in_observation: bool = False,
+        include_qfrc_actuator_in_observation: bool = False,
+
+logs/1732248602/PPO_0
+
+        frame_skip: int = 5,
+        default_camera_config: Dict[str, Union[float, int]] = DEFAULT_CAMERA_CONFIG,
+        forward_reward_weight: float = 3.00,
+        ctrl_cost_weight: float = 0.05,
+        ctrl_cost_diff_axis_y: float = 0.1,
+        # contact_cost_weight: float = 5e-7,
+        # contact_cost_range: Tuple[float, float] = (-np.inf, 10.0),
+        healthy_reward: float = 3.0,
+        terminate_when_unhealthy: bool = True,
+        healthy_z_range: Tuple[float, float] = (0.24, 0.32),
+        reset_noise_scale: float = 1e-2,
+        # exclude_current_positions_from_observation: bool = True,
+        include_cinert_in_observation: bool = False,
+        include_cvel_in_observation: bool = False,
+        include_qfrc_actuator_in_observation: bool = False,
