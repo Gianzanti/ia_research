@@ -10,7 +10,7 @@ if __name__ == "__main__":
         "--algo",
         type=str,
         help="Algorithm to use in training",
-        choices=["PPO", "SAC", "DDPG", "TD3", "A2C"],
+        choices=["PPO", "SAC", "DDPG", "TD3", "A2C", "ARS", "TRPO"],
         default="PPO",
     )
     parser.add_argument(

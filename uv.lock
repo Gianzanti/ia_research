@@ -108,11 +108,11 @@ wheels = [
 
 [[package]]
 name = "etils"
-version = "1.10.0"
+version = "1.11.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/5d/fa/5a1c28c437e3e076a59583442d4ac3948f88ab416400515be83cd51f6b5e/etils-1.10.0.tar.gz", hash = "sha256:4eaa9d7248fd4eeb75e44d47ca29875a5ccea044cc14a17435794bf8ac116a05", size = 103505 }
+sdist = { url = "https://files.pythonhosted.org/packages/85/28/8a4d0614a7864c1c703f848dedb69d2f532a623ffb0159e390c06ad20279/etils-1.11.0.tar.gz", hash = "sha256:aff3278a3be7fddf302dfd80335e9f924244666c71239cd91e836f3d055f1c4a", size = 103610 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1f/e4/0826dfde2db3fb3a34954323a84d0e6b6fdbc7eb5278c84159c6d43290ac/etils-1.10.0-py3-none-any.whl", hash = "sha256:0777fe60a234b4c65ca53470fc64f2dd2d0c6bca7fcc623fdaa8d7fa5a317098", size = 164944 },
+    { url = "https://files.pythonhosted.org/packages/4f/4a/ff8aa2c57300613b69905308c5afe92c5b01112d766c25a305fd6796170a/etils-1.11.0-py3-none-any.whl", hash = "sha256:a394cf3476bcec51c221426a70c39cd1006e889456ba41e4d7f12fd6814be7a5", size = 165419 },
 ]
 
 [package.optional-dependencies]
@@ -939,6 +939,7 @@ dependencies = [
     { name = "mujoco" },
     { name = "rich" },
     { name = "robotis-op3" },
+    { name = "sb3-contrib" },
     { name = "stable-baselines3" },
     { name = "tensorboard" },
     { name = "tqdm" },
@@ -949,7 +950,8 @@ requires-dist = [
     { name = "imageio", specifier = ">=2.36.0" },
     { name = "mujoco", specifier = ">=3.2.5" },
     { name = "rich", specifier = ">=13.9.4" },
-    { name = "robotis-op3", path = "../robotis-op3/dist/robotis_op3-0.2.7-py3-none-any.whl" },
+    { name = "robotis-op3", path = "../robotis-op3/dist/robotis_op3-0.2.29-py3-none-any.whl" },
+    { name = "sb3-contrib", git = "https://github.com/Stable-Baselines-Team/stable-baselines3-contrib/" },
     { name = "stable-baselines3", git = "https://github.com/DLR-RM/stable-baselines3" },
     { name = "tensorboard", specifier = ">=2.18.0" },
     { name = "tqdm", specifier = ">=4.67.0" },
@@ -971,17 +973,25 @@ wheels = [
 
 [[package]]
 name = "robotis-op3"
-version = "0.2.7"
-source = { path = "../robotis-op3/dist/robotis_op3-0.2.7-py3-none-any.whl" }
+version = "0.2.29"
+source = { path = "../robotis-op3/dist/robotis_op3-0.2.29-py3-none-any.whl" }
 dependencies = [
     { name = "gymnasium" },
 ]
 wheels = [
-    { filename = "robotis_op3-0.2.7-py3-none-any.whl", hash = "sha256:c41080052e771fbe51d376128f18bee9c51daeccbc1f120648f0100a701f902e" },
+    { filename = "robotis_op3-0.2.29-py3-none-any.whl", hash = "sha256:cc8494ce2e2d28998f7519b4765370a8479e35be8905bea13b77fe3dc2736926" },
 ]
 
 [package.metadata]
 requires-dist = [{ name = "gymnasium", specifier = ">=1.0.0" }]
+
+[[package]]
+name = "sb3-contrib"
+version = "2.5.0a0"
+source = { git = "https://github.com/Stable-Baselines-Team/stable-baselines3-contrib/#36c21ac1e429b5a01f1fa84763344b78b00fc488" }
+dependencies = [
+    { name = "stable-baselines3" },
+]
 
 [[package]]
 name = "setuptools"
@@ -1004,7 +1014,7 @@ wheels = [
 [[package]]
 name = "stable-baselines3"
 version = "2.5.0a0"
-source = { git = "https://github.com/DLR-RM/stable-baselines3#daaebd0a5280974591c1557e29370bd6f6510d3a" }
+source = { git = "https://github.com/DLR-RM/stable-baselines3#8a3e3ccb4e08e42f60240dfa510b97c47a34b787" }
 dependencies = [
     { name = "cloudpickle" },
     { name = "gymnasium" },
@@ -1100,14 +1110,14 @@ wheels = [
 
 [[package]]
 name = "tqdm"
-version = "4.67.0"
+version = "4.67.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama", marker = "platform_system == 'Windows'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e8/4f/0153c21dc5779a49a0598c445b1978126b1344bab9ee71e53e44877e14e0/tqdm-4.67.0.tar.gz", hash = "sha256:fe5a6f95e6fe0b9755e9469b77b9c3cf850048224ecaa8293d7d2d31f97d869a", size = 169739 }
+sdist = { url = "https://files.pythonhosted.org/packages/a8/4b/29b4ef32e036bb34e4ab51796dd745cdba7ed47ad142a9f4a1eb8e0c744d/tqdm-4.67.1.tar.gz", hash = "sha256:f8aef9c52c08c13a65f30ea34f4e5aac3fd1a34959879d7e59e63027286627f2", size = 169737 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2b/78/57043611a16c655c8350b4c01b8d6abfb38cc2acb475238b62c2146186d7/tqdm-4.67.0-py3-none-any.whl", hash = "sha256:0cd8af9d56911acab92182e88d763100d4788bdf421d251616040cc4d44863be", size = 78590 },
+    { url = "https://files.pythonhosted.org/packages/d0/30/dc54f88dd4a2b5dc8a0279bdd7270e735851848b762aeb1c1184ed1f6b14/tqdm-4.67.1-py3-none-any.whl", hash = "sha256:26445eca388f82e72884e0d580d5464cd801a3ea01e63e5601bdff9ba6a48de2", size = 78540 },
 ]
 
 [[package]]

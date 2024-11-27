@@ -107,6 +107,13 @@ def train(sb3_algo):
     env = gym.make("Robotis-v0")
     TIMESTEPS = 25000
 
+    learn_args = {
+        "total_timesteps": TIMESTEPS, 
+        "reset_num_timesteps": False, 
+        "progress_bar":True, 
+        "callback": TensorboardCallback()
+    }
+
     match sb3_algo:
         case "SAC":
             model = SAC(
@@ -131,9 +138,28 @@ def train(sb3_algo):
             model = A2C("MlpPolicy", env, verbose=1, device="cpu", tensorboard_log=log_dir, policy_kwargs=dict(optimizer_class=RMSpropTFLike, optimizer_kwargs=dict(eps=1e-5)))
 
         case "PPO":
-            env = make_vec_env("Robotis-v0", n_envs=8, vec_env_cls=SubprocVecEnv)
+            env = make_vec_env("Robotis-v0", n_envs=2, vec_env_cls=SubprocVecEnv)
             model = PPO(
-                "MlpPolicy", env, verbose=1, device="cpu", tensorboard_log=log_dir
+                "MlpPolicy", 
+                env, 
+                verbose=1, 
+                device="cpu", 
+                tensorboard_log=log_dir, 
+                # batch_size= 16,
+                # clip_range= 0.4,
+                # ent_coef= 3.241790106161843e-07,
+                # gae_lambda= 0.98,
+                # gamma= 0.999,
+                # learning_rate= 0.33193338832282054,
+                # max_grad_norm= 2,
+                # n_epochs= 10,
+                # n_steps= 2048,
+                # vf_coef= 0.2745982707731268,
+                # # policy_kwargs = {
+                # #     'ortho_init': False,
+                # #     'activation_fn': 'tanh',
+                # #     'net_arch': 'medium'
+                # # }            
             )
 
         case "DDPG":
@@ -146,6 +172,24 @@ def train(sb3_algo):
             model = DDPG("MlpPolicy", env, action_noise=action_noise, verbose=1,  device="cuda", tensorboard_log=log_dir)
 
 
+        case "ARS":
+            from sb3_contrib import ARS
+            # from sb3_contrib.common.vec_env import AsyncEval
+            # n_envs = 2
+            model = ARS("LinearPolicy", env, n_delta=2, n_top=1, verbose=1, device="cuda", tensorboard_log=log_dir)
+            # # Create env for asynchronous evaluation (run in different processes)
+            # async_eval = AsyncEval([lambda: make_vec_env(env) for _ in range(n_envs)], model.policy)
+            # learn_args["async_eval"] = async_eval
+            learn_args["log_interval"] = 4
+
+            # model.learn(log_interval=4, async_eval=async_eval)            
+
+        case "TRPO":
+            from sb3_contrib import TRPO
+            env = make_vec_env("Robotis-v0", n_envs=4, vec_env_cls=SubprocVecEnv)
+            model = TRPO("MlpPolicy", env, verbose=1, device="cpu", tensorboard_log=log_dir)
+            learn_args["log_interval"] = 4
+
         case _:
             print("Algorithm not found")
             return
@@ -153,9 +197,10 @@ def train(sb3_algo):
     iters = 0
     while True:
         iters += 1
-        model.learn(
-            total_timesteps=TIMESTEPS, reset_num_timesteps=False, progress_bar=True, callback=TensorboardCallback()
-        )
+        # model.learn(
+        #     total_timesteps=TIMESTEPS, reset_num_timesteps=False, progress_bar=True, callback=TensorboardCallback()
+        # )
+        model.learn(**learn_args)
         model.save(f"{model_dir}/{TIMESTEPS*iters}")
         if iters == 1000:
             break
@@ -182,6 +227,10 @@ def test(sb3_algo, model):
             model = PPO.load(model, env=env, device="cpu")
         case "DDPG":
             model = DDPG.load(model, env=env, device="cuda")
+        case "TRPO":
+            from sb3_contrib import TRPO
+            model = TRPO.load(model, env=env, device="cpu")
+
         case _:
             print("Algorithm not found")
             return

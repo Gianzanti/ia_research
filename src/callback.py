@@ -56,15 +56,19 @@ class TensorboardCallback(BaseCallback):
         # print(info)
         # Log relevant values from the info dictionary
         self.logger.record('info/x_position', info['x_position'])
-        self.logger.record('info/y_position', info['y_position'])
         self.logger.record('info/x_velocity', info['x_velocity'])
-        self.logger.record('info/y_velocity', info['y_velocity'])
         self.logger.record('info/z_height', info['z_height'])
-        self.logger.record('info/x_pos_delta', info['x_pos_delta'])
-        self.logger.record('rew/reward_survive', info['reward_survive'])
-        self.logger.record('rew/reward_forward', info['reward_forward'])
-        self.logger.record('rew/reward_ctrl', info['reward_ctrl'])
-        self.logger.record('rew/reward_diff_y_axis', info['reward_diff_y_axis'])
+        # self.logger.record('info/right_foot', info['right_foot'])
+        # self.logger.record('info/left_foot', info['left_foot'])
+
+        self.logger.record('rew/forward_reward', info['forward_reward'])
+        self.logger.record('rew/healthy_reward', info['healthy_reward'])
+        self.logger.record('rew/distance_cost', info['distance_cost'])
+        self.logger.record('rew/ctrl_cost', info['ctrl_cost'])
+        self.logger.record('rew/zmp', info['zmp'])
+
+
+
         return True
 
     def _on_rollout_end(self) -> None:
